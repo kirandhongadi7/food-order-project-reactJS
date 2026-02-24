@@ -1,74 +1,83 @@
-import React, { useContext } from 'react'
+import React from "react";
 import { MdOutlineDeleteOutline } from "react-icons/md";
-import { dataContext } from '../context/UserContext';
+import { useDispatch } from "react-redux";
+import { RemoveItem, UpdateQty } from "../redux/cartSlice";
+import { toast } from "react-toastify";
 
-const Cart = ( {item}) => {
+const Cart = ({ name, id, image, price, qty }) => {
+  let dispatch = useDispatch();
 
-    let {cartItems,setCartItems} = useContext(dataContext)
+  const deleteItem = () => {
+    dispatch(RemoveItem(id));
+  };
 
-    const deleteItem =(id) =>{
-        const deleteIt = cartItems.filter((item) => item.id !== id)
-        setCartItems(deleteIt)
+  const increment = () => {
+    dispatch(UpdateQty({ id, qty: qty + 1 }));
+  };
+
+  const decrement = () => {
+    if (qty <= 1) {
+      dispatch(RemoveItem(id));
+    } else {
+      dispatch(UpdateQty({ id, qty: qty - 1 }));
     }
+  };
+
   return (
     <div className="mb-4">
-
       {/* Cart Item */}
-      <div className="flex justify-between items-center bg-white shadow-md rounded-xl p-4">
-
+      <div className="flex justify-between items-center bg-white shadow-md rounded-xl p-3 sm:p-4">
         {/* Left Section */}
-        <div className="flex items-center gap-4">
-
+        <div className="flex items-center gap-3 sm:gap-4">
           {/* Image */}
-          <div className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center">
-            <img src={item.food_image} alt={item.food_name} className="w-full h-full object-cover rounded-lg" />
+          <div
+            className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 
+          bg-gray-200 rounded-lg overflow-hidden"
+          >
+            <img
+              src={image}
+              alt={name}
+              className="w-full h-full object-cover"
+            />
           </div>
 
           {/* Name + Quantity */}
           <div>
-            <h3 className="font-semibold text-lg">{item.food_name} </h3>
+            <h3 className="font-semibold text-sm sm:text-base md:text-lg">
+              {name}
+            </h3>
 
             {/* Quantity Control */}
-            <div className="mt-2 w-24 flex justify-between items-center border border-orange-400 rounded-lg px-2 py-1 text-orange-500 font-medium">
-              <span className="cursor-pointer">-</span>
-              <span>1</span>
-              <span className="cursor-pointer">+</span>
+            <div
+              className="mt-2 w-20 sm:w-24 flex justify-between items-center 
+            border border-orange-400 rounded-lg px-2 py-1 
+            text-orange-500 font-medium text-sm sm:text-base"
+            >
+              <span onClick={decrement} className="cursor-pointer select-none">
+                -
+              </span>
+              <span>{qty}</span>
+              <span onClick={increment} className="cursor-pointer select-none">
+                +
+              </span>
             </div>
           </div>
         </div>
 
         {/* Right Section */}
         <div className="text-right">
-          <div className="font-semibold text-gray-700 mb-2">₹{item.price}</div>
-          <MdOutlineDeleteOutline className="text-red-600 text-2xl cursor-pointer" onClick={()=>  deleteItem(item.id)} />
-        </div>
+          <div className="font-semibold text-gray-700 mb-2 text-sm sm:text-base">
+            ₹{price}
+          </div>
 
+          <MdOutlineDeleteOutline
+            className="text-red-600 text-xl sm:text-2xl cursor-pointer hover:text-red-700 transition"
+            onClick={() => deleteItem(id)}
+          />
+        </div>
       </div>
-
-      {/* Price Summary */}
-      <div className="bg-white shadow-md rounded-xl p-4">
-
-        <div className="flex justify-between mb-2 text-gray-600">
-          <span>Price</span>
-          <span>₹{item.price}</span>
-        </div>
-
-        <div className="flex justify-between mb-2 text-gray-600">
-          <span>Delivery Charge</span>
-          <span>₹10</span>
-        </div>
-
-        <hr className="my-3" />
-
-        <div className="flex justify-between font-bold text-lg">
-          <span>Total</span>
-          <span>₹{item.price + 21}</span>
-        </div>
-
-      </div>
-
     </div>
-  )
-}
+  );
+};
 
 export default Cart;

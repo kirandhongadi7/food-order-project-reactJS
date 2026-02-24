@@ -3,24 +3,24 @@ import { LuLeafyGreen } from "react-icons/lu";
 import { GiChickenOven } from "react-icons/gi";
 import { food_items } from "../food";
 import { dataContext } from "../context/UserContext";
+import { useDispatch } from "react-redux";
+import { AddItem } from "../redux/cartSlice";
+import { toast } from "react-toastify";
 
 const Card = ({ card }) => {
-  const { food_name, food_category, food_type, food_image, price ,id} = card;
+  const { food_name, food_category, food_type, food_image, price, id } = card;
 
-  let {cartItems,setCartItems} = useContext(dataContext)
+  let { cartItems, setCartItems } = useContext(dataContext);
 
-  
-  
-  const addToCart = (id) =>{
+  // const addToCart = (id) => {
+  //   let item = food_items.find((food) => food.id === id);
 
-    let item = food_items.find((food) => food.id === id)
-    
-    if(item) {
-      setCartItems([...cartItems, item])
-    }
+  //   if (item) {
+  //     setCartItems([...cartItems, item]);
+  //   }
+  // };
 
-  }
-
+  let dispatch = useDispatch();
 
   return (
     <div className="w-35 md:w-64 bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 flex flex-col cursor-pointer">
@@ -36,7 +36,12 @@ const Card = ({ card }) => {
       {/* Content */}
       <div className="p-4 flex flex-col grow">
         {/* Name */}
-        <h3 className="text-lg  font-semibold text-gray-800 truncate" title={food_name}>{food_name}</h3>
+        <h3
+          className="text-lg  font-semibold text-gray-800 truncate"
+          title={food_name}
+        >
+          {food_name}
+        </h3>
 
         <h3 className="text-md font-normal text-gray-600">{food_category}</h3>
 
@@ -69,8 +74,21 @@ const Card = ({ card }) => {
         <div className="grow"></div>
 
         {/* Add to Dish Button */}
-        <button className="mt-2 w-full md:mt-4 bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-xl transition duration-300 font-medium cursor-pointer"
-         onClick={()=>addToCart(id)}
+        <button
+          className="mt-2 w-full md:mt-4 bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-xl transition duration-300 font-medium cursor-pointer active:scale-95 "
+          onClick={() => {
+            dispatch(
+              AddItem({
+                id,
+                name: food_name,
+                price,
+                image: food_image,
+                qty: 1,
+              }),
+            );
+
+            toast.success("Item added to cart");
+          }}
         >
           Add to Dish
         </button>

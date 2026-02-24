@@ -1,6 +1,7 @@
 
 import './App.css'
 import Home from "./pages/Home"
+import {ToastContainer} from "react-toastify"
 
 function App() {
   
@@ -9,6 +10,7 @@ function App() {
     <>
       <div>
         <Home />
+        <ToastContainer />
       </div>
         
     </>
